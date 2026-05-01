@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whole-Body Manipulation & Navigation — Thesis · Dhruval Vaidya</title>
+<meta name="description" content="Master's thesis: learning-based whole-body manipulation for door opening on a mobile manipulator, combining Reinforcement Learning and Behavior Cloning in MuJoCo. Fraunhofer IPA · 2026.">
+<meta name="keywords" content="whole-body manipulation, reinforcement learning, behavior cloning, mobile manipulator, door opening, MuJoCo, robot learning, Fraunhofer IPA, contact-rich manipulation, imitation learning">
+
+<meta property="og:title" content="Whole-Body Manipulation Thesis — Dhruval Vaidya">
+<meta property="og:description" content="Learning-based mobile manipulation for door opening, combining RL and BC. Fraunhofer IPA, 2026.">
+<meta property="og:type" content="article">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --paper:        #F4EFE6;
+    --paper-soft:   #EAE3D6;
+    --ink:          #14213D;
+    --ink-soft:     #3A4566;
+    --rule:         #C8BFAE;
+    --accent:       #E76F2C;
+    --accent-soft:  #F4D9C4;
+    --muted:        #6B6354;
+    --serif:        'Fraunces', Georgia, serif;
+    --sans:         'Manrope', -apple-system, sans-serif;
+    --mono:         'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    overflow-x: hidden;
+    background-image:
+      linear-gradient(var(--rule) 0.5px, transparent 0.5px),
+      linear-gradient(90deg, var(--rule) 0.5px, transparent 0.5px);
+    background-size: 32px 32px;
+    background-attachment: fixed;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: var(--paper); opacity: 0.92;
+    z-index: -1; pointer-events: none;
+  }
+  ::selection { background: var(--accent); color: var(--paper); }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 32px; }
+  .wrap-wide { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 32px;
+    backdrop-filter: blur(8px);
+    background: rgba(244, 239, 230, 0.78);
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .nav-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .back-link {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--accent); }
+  .nav-right {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .nav-right span { color: var(--accent); }
+
+  /* Hero */
+  .hero {
+    padding: 160px 0 80px;
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .hero-eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    background: var(--paper-soft);
+    border: 0.5px solid var(--rule);
+    border-radius: 100px;
+    font-size: 11px;
+  }
+  .badge.ink { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .pulse {
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(231, 111, 44, 0.6); }
+    50%      { box-shadow: 0 0 0 8px rgba(231, 111, 44, 0); }
+  }
+
+  h1.thesis-title {
+    font-family: var(--serif);
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    margin-bottom: 24px;
+  }
+  h1.thesis-title em { font-style: italic; color: var(--accent); }
+
+  .hero-tldr {
+    font-size: 19px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    max-width: 720px;
+    margin-bottom: 40px;
+  }
+  .hero-tldr strong { color: var(--ink); font-weight: 600; }
+
+  .hero-meta-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding-top: 32px;
+    border-top: 0.5px solid var(--rule);
+  }
+  @media (max-width: 720px) { .hero-meta-row { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+  .meta-item .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .meta-item .value {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  /* Section system */
+  .section {
+    padding: 80px 0;
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .section.dark {
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom-color: var(--ink);
+  }
+  .section.dark .section-num { color: var(--accent); }
+  .section.dark .section-eyebrow { color: var(--accent-soft); }
+  .section.dark h2 { color: var(--paper); }
+  .section.dark h2 em { color: var(--accent); }
+  .section.dark p { color: rgba(244, 239, 230, 0.78); }
+  .section.dark p strong { color: var(--paper); }
+
+  .section-eyebrow {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .section-num { color: var(--accent); font-weight: 500; }
+
+  h2.section-h {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4.2vw, 48px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+    max-width: 800px;
+  }
+  h2.section-h em { font-style: italic; color: var(--accent); }
+
+  .body-prose p {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+    max-width: 720px;
+  }
+  .body-prose p strong { color: var(--ink); font-weight: 600; }
+  .body-prose .lead {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--ink);
+    font-style: italic;
+    max-width: 720px;
+    margin-bottom: 32px;
+  }
+
+  /* Approach diagram cards */
+  .approach-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 32px;
+  }
+  @media (max-width: 720px) { .approach-grid { grid-template-columns: 1fr; } }
+  .approach-card {
+    background: var(--paper-soft);
+    border: 0.5px solid var(--rule);
+    border-radius: 4px;
+    padding: 32px;
+    position: relative;
+  }
+  .section.dark .approach-card {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.15);
+  }
+  .approach-card .card-num {
+    font-family: var(--serif);
+    font-size: 48px;
+    font-style: italic;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .approach-card h4 {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .section.dark .approach-card h4 { color: var(--paper); }
+  .approach-card p {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+  .section.dark .approach-card p { color: rgba(244, 239, 230, 0.7); }
+
+  /* Methodology callouts */
+  .method-list {
+    list-style: none;
+    margin-top: 24px;
+  }
+  .method-list li {
+    padding: 24px 0;
+    border-bottom: 0.5px solid var(--rule);
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .section.dark .method-list li { border-color: rgba(255,255,255,0.12); }
+  .method-list li:last-child { border-bottom: none; }
+  @media (max-width: 720px) {
+    .method-list li { grid-template-columns: 1fr; gap: 8px; }
+  }
+  .method-list .method-key {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding-top: 4px;
+  }
+  .method-list .method-val {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .section.dark .method-list .method-val { color: rgba(244, 239, 230, 0.78); }
+
+  /* Results — centerpiece */
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  @media (max-width: 720px) { .results-grid { grid-template-columns: 1fr; } }
+  .result-stat {
+    background: rgba(255,255,255,0.04);
+    border: 0.5px solid rgba(255,255,255,0.15);
+    padding: 32px 24px;
+    border-radius: 4px;
+  }
+  .result-stat .num {
+    font-family: var(--serif);
+    font-size: 56px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--paper);
+    margin-bottom: 8px;
+  }
+  .result-stat .num em { font-style: italic; color: var(--accent); }
+  .result-stat .desc {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-soft);
+    line-height: 1.4;
+  }
+
+  /* Demo placeholder */
+  .demo-placeholder {
+    aspect-ratio: 16/9;
+    background: rgba(255,255,255,0.04);
+    border: 1px dashed rgba(255,255,255,0.25);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    text-align: center;
+    padding: 24px;
+  }
+  .demo-placeholder .icon {
+    font-family: var(--serif);
+    font-size: 48px;
+    font-style: italic;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .demo-placeholder .title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-soft);
+    margin-bottom: 6px;
+  }
+  .demo-placeholder .hint {
+    font-size: 13px;
+    color: rgba(244, 239, 230, 0.5);
+    max-width: 400px;
+  }
+  .demo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 720px) { .demo-grid { grid-template-columns: 1fr; } }
+
+  /* Findings */
+  .finding {
+    padding: 32px 0;
+    border-bottom: 0.5px solid var(--rule);
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .finding:last-child { border-bottom: none; }
+  @media (max-width: 720px) { .finding { grid-template-columns: 1fr; gap: 12px; } }
+  .finding-num {
+    font-family: var(--serif);
+    font-size: 36px;
+    font-style: italic;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .finding h3 {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+  .finding p {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    max-width: 640px;
+  }
+
+  /* Stack */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 32px;
+  }
+  @media (max-width: 720px) { .stack-grid { grid-template-columns: 1fr; gap: 16px; } }
+  .stack-cat {
+    padding: 24px;
+    background: var(--paper-soft);
+    border: 0.5px solid var(--rule);
+    border-radius: 4px;
+  }
+  .stack-cat h4 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .stack-cat ul { list-style: none; }
+  .stack-cat li {
+    font-size: 14px;
+    color: var(--ink-soft);
+    padding: 5px 0;
+    border-bottom: 0.5px dashed var(--rule);
+  }
+  .stack-cat li:last-child { border: none; }
+
+  /* Closing CTA */
+  .closing {
+    padding: 100px 0;
+    text-align: center;
+    border-top: 0.5px solid var(--rule);
+  }
+  .closing h2 {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  .closing h2 em { font-style: italic; color: var(--accent); }
+  .closing p {
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 560px;
+    margin: 0 auto 36px;
+  }
+  .cta-row {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 26px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.25s ease;
+  }
+  .btn-primary { background: var(--ink); color: var(--paper); }
+  .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 0.5px solid var(--ink);
+  }
+  .btn-secondary:hover { background: var(--ink); color: var(--paper); }
+
+  footer {
+    padding: 32px 0;
+    border-top: 0.5px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  /* Embargo banner */
+  .embargo {
+    background: var(--accent-soft);
+    border: 0.5px solid var(--accent);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin: 24px 0;
+    font-size: 14px;
+    color: var(--ink);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .embargo strong { font-weight: 600; }
+  .embargo .lock {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-style: italic;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="back-link">← Back to portfolio</a>
+    <div class="nav-right">Dhruval <span>·</span> Vaidya</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-eyebrow">
+      <span class="badge"><span class="pulse"></span>Writing report · Defense July 2026</span>
+      <span class="badge ink">M.Sc. Thesis</span>
+      <span>Fraunhofer IPA · 2025–2026</span>
+    </div>
+
+    <h1 class="thesis-title">
+      Whole-body manipulation,<br>
+      learned from <em>data</em><br>
+      and <em>demonstration</em>.
+    </h1>
+
+    <p class="hero-tldr">
+      Most mobile manipulators control their <strong>base</strong> and <strong>arm</strong> as separate systems — leaving coordination, reachability, and dexterity on the table. My M.Sc. thesis investigates <strong>learning-based whole-body control</strong>, where Reinforcement Learning and Behavior Cloning teach a mobile manipulator to coordinate its full body for <strong>contact-rich door-opening</strong> in MuJoCo.
+    </p>
+
+    <div class="hero-meta-row">
+      <div class="meta-item">
+        <div class="label">Platform</div>
+        <div class="value">Mobile manipulator</div>
+      </div>
+      <div class="meta-item">
+        <div class="label">Simulator</div>
+        <div class="value">MuJoCo</div>
+      </div>
+      <div class="meta-item">
+        <div class="label">Methods</div>
+        <div class="value">RL + BC</div>
+      </div>
+      <div class="meta-item">
+        <div class="label">Task</div>
+        <div class="value">Door opening</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- 01 — THE PROBLEM -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">
+      <span class="section-num">01</span>
+      <span>—— The problem</span>
+    </div>
+    <h2 class="section-h">Why the base and the arm shouldn't be <em>strangers</em>.</h2>
+
+    <div class="body-prose">
+      <p class="lead">A mobile manipulator that doesn't think with its whole body is just a robot arm carrying around a confused car.</p>
+
+      <p>In most industrial deployments, mobile manipulators run two largely independent stacks: a navigation planner that drives the base to a pose, then a manipulation planner that takes over once the base has stopped. It works — barely. It's also brittle.</p>
+
+      <p>Decoupled control means the arm can't compensate for a base that stopped 5 cm short. The base can't shift its weight to extend the arm's reach. Contact-rich tasks like <strong>door opening</strong>, where the robot must simultaneously pull a handle, navigate around a swinging door, and reposition mid-task, are exactly where this seam falls apart.</p>
+
+      <p>The thesis asks: <strong>can we do better by treating the entire mobile-manipulator system as a single coupled task</strong>, and learning the coordination from data rather than hand-engineering it?</p>
+    </div>
+  </div>
+</section>
+
+<!-- 02 — APPROACH -->
+<section class="section dark">
+  <div class="wrap">
+    <div class="section-eyebrow">
+      <span class="section-num">02</span>
+      <span>—— Approach</span>
+    </div>
+    <h2 class="section-h">Two paradigms, <em>one policy</em>.</h2>
+
+    <div class="body-prose">
+      <p>The thesis combines two classes of robot learning that have historically been used separately. Each compensates for the other's weakness.</p>
+    </div>
+
+    <div class="approach-grid">
+      <div class="approach-card">
+        <div class="card-num">RL</div>
+        <h4>Reinforcement Learning</h4>
+        <p>An agent explores the task in simulation and improves through trial and error, optimizing a reward signal. Strong at <strong>discovering motion</strong>; weak at sample efficiency, especially for sparse-reward, contact-rich tasks like door opening.</p>
+      </div>
+      <div class="approach-card">
+        <div class="card-num">BC</div>
+        <h4>Behavior Cloning</h4>
+        <p>The robot learns by imitating a set of demonstrations. Strong at <strong>bootstrapping reasonable behavior</strong> quickly; weak at recovering when the robot drifts off the demonstrated distribution.</p>
+      </div>
+    </div>
+
+    <div class="body-prose" style="margin-top: 40px;">
+      <p>The combination — <strong>BC for a strong prior, RL to refine and recover</strong> — is the bet at the heart of this work. The full architecture and training schedule are detailed in the thesis report.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 03 — METHODOLOGY -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">
+      <span class="section-num">03</span>
+      <span>—— Methodology</span>
+    </div>
+    <h2 class="section-h">The setup, in <em>plain language</em>.</h2>
+
+    <ul class="method-list">
+      <li>
+        <div class="method-key">// PLATFORM</div>
+        <div class="method-val">A mobile manipulator — wheeled mobile base coupled with a serial-link arm — modeled as a unified kinematic system in simulation.</div>
+      </li>
+      <li>
+        <div class="method-key">// SIMULATOR</div>
+        <div class="method-val">MuJoCo, chosen for its accurate contact dynamics — essential for door-opening, where the entire task is defined by what happens at the contact patch between gripper and handle.</div>
+      </li>
+      <li>
+        <div class="method-key">// TASK</div>
+        <div class="method-val">Approach a door, grasp the handle, apply the right combination of base motion and arm motion to open it, then navigate through. A task that decoupled controllers struggle with by design.</div>
+      </li>
+      <li>
+        <div class="method-key">// RL ALGORITHM</div>
+        <div class="method-val">[YOUR CONTENT — e.g. "PPO with a custom reward shaping" or "SAC with prioritized experience replay" — fill in once you confirm]</div>
+      </li>
+      <li>
+        <div class="method-key">// DEMOS FOR BC</div>
+        <div class="method-val">[YOUR CONTENT — describe how you collected demonstrations: scripted trajectories, teleoperation, motion capture, etc.]</div>
+      </li>
+      <li>
+        <div class="method-key">// BC + RL STRATEGY</div>
+        <div class="method-val">[YOUR CONTENT — e.g. "BC pretraining followed by RL fine-tuning" or "joint training with BC as auxiliary loss" — your specific combination]</div>
+      </li>
+      <li>
+        <div class="method-key">// EVALUATION</div>
+        <div class="method-val">[YOUR CONTENT — what metrics you tracked: success rate, task completion time, sample efficiency, generalization to door variations, etc.]</div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- 04 — RESULTS -->
+<section class="section dark">
+  <div class="wrap-wide">
+    <div class="section-eyebrow">
+      <span class="section-num">04</span>
+      <span>—— Results · Centerpiece</span>
+    </div>
+    <h2 class="section-h" style="max-width: 880px;">What <em>actually happened</em> when the policy met the door.</h2>
+
+    <div class="embargo" style="background: rgba(231, 111, 44, 0.12); border-color: var(--accent); color: var(--accent-soft);">
+      <span class="lock">⚿</span>
+      <div>
+        <strong style="color: var(--paper);">Full numerical results unlock after defense (July 2026).</strong>
+        Final figures, metrics, and demo videos are reserved for the thesis defense. The qualitative summary below previews the direction of findings.
+      </div>
+    </div>
+
+    <!-- Headline stats -->
+    <div class="results-grid">
+      <div class="result-stat">
+        <div class="num"><em>[XX]</em>%</div>
+        <div class="desc">Success rate<br>on door-opening task</div>
+      </div>
+      <div class="result-stat">
+        <div class="num"><em>[N×]</em></div>
+        <div class="desc">Sample efficiency vs.<br>RL-only baseline</div>
+      </div>
+      <div class="result-stat">
+        <div class="num"><em>[N]</em></div>
+        <div class="desc">Door variations<br>generalized to</div>
+      </div>
+    </div>
+
+    <!-- Demo grid -->
+    <h3 style="font-family: var(--serif); font-size: 24px; font-weight: 500; color: var(--paper); margin-bottom: 8px;">Visual results</h3>
+    <p style="color: rgba(244, 239, 230, 0.65); font-size: 15px; max-width: 640px; margin-bottom: 24px;">
+      Recordings from MuJoCo showing the learned whole-body policy in action. Full clips and comparison videos published after defense.
+    </p>
+
+    <div class="demo-grid">
+      <div>
+        <div class="demo-placeholder">
+          <div class="icon">▷</div>
+          <div class="title">Whole-body policy · Demo 01</div>
+          <div class="hint">Approach + grasp + open + navigate-through, end to end</div>
+        </div>
+      </div>
+      <div>
+        <div class="demo-placeholder">
+          <div class="icon">▷</div>
+          <div class="title">Decoupled baseline · Demo 02</div>
+          <div class="hint">Comparison: classical separate base + arm control</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-grid">
+      <div>
+        <div class="demo-placeholder">
+          <div class="icon">📈</div>
+          <div class="title">Learning curves</div>
+          <div class="hint">RL-only vs. BC-only vs. combined approach</div>
+        </div>
+      </div>
+      <div>
+        <div class="demo-placeholder">
+          <div class="icon">⊞</div>
+          <div class="title">Ablation study</div>
+          <div class="hint">Contribution of BC pretraining vs. RL fine-tuning</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 — KEY FINDINGS -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">
+      <span class="section-num">05</span>
+      <span>—— Key findings</span>
+    </div>
+    <h2 class="section-h">Four things this thesis <em>shows</em>.</h2>
+
+    <div style="margin-top: 32px;">
+      <div class="finding">
+        <div class="finding-num">01</div>
+        <div>
+          <h3>BC pretraining is the difference between learning a door and learning <em>nothing</em>.</h3>
+          <p>[YOUR CONTENT — describe the qualitative impact of BC pretraining: did pure RL fail to learn the task at all? Did BC give the policy a workable starting point that RL could refine?]</p>
+        </div>
+      </div>
+
+      <div class="finding">
+        <div class="finding-num">02</div>
+        <div>
+          <h3>Whole-body coordination beats decoupled control on contact-rich tasks.</h3>
+          <p>[YOUR CONTENT — describe the qualitative gap between whole-body and baseline: more reliable grasp? smoother motion? recovers from contact disturbances?]</p>
+        </div>
+      </div>
+
+      <div class="finding">
+        <div class="finding-num">03</div>
+        <div>
+          <h3>Reward shaping matters more than algorithm choice.</h3>
+          <p>[YOUR CONTENT — your finding on reward design, sparse-vs-dense rewards, or what the algorithm cared about most. Or replace this finding entirely with one that's more accurate to your work.]</p>
+        </div>
+      </div>
+
+      <div class="finding">
+        <div class="finding-num">04</div>
+        <div>
+          <h3>What didn't work — and why that's the most useful page in the thesis.</h3>
+          <p>[YOUR CONTENT — describe one or two honest failures: a hyperparameter regime that diverged, a task variation the policy couldn't generalize to, an architectural choice you'd revisit. This is the most credible section to a robotics recruiter.]</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 — STACK -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">
+      <span class="section-num">06</span>
+      <span>—— Tools used</span>
+    </div>
+    <h2 class="section-h">Built with.</h2>
+
+    <div class="stack-grid">
+      <div class="stack-cat">
+        <h4>Simulation</h4>
+        <ul>
+          <li>MuJoCo</li>
+          <li>Custom mobile manipulator model</li>
+          <li>Door environment</li>
+        </ul>
+      </div>
+      <div class="stack-cat">
+        <h4>Learning</h4>
+        <ul>
+          <li>PyTorch</li>
+          <li>[YOUR RL library — stable-baselines3 / RLlib / custom]</li>
+          <li>[YOUR BC framework]</li>
+        </ul>
+      </div>
+      <div class="stack-cat">
+        <h4>Languages &amp; Tools</h4>
+        <ul>
+          <li>Python</li>
+          <li>NumPy · Matplotlib</li>
+          <li>Weights &amp; Biases / TensorBoard</li>
+          <li>Linux · Git</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING CTA -->
+<section class="closing">
+  <div class="wrap">
+    <div class="section-eyebrow" style="justify-content: center;">
+      <span class="section-num">07</span>
+      <span>—— What's next</span>
+    </div>
+    <h2>Want the <em>full version</em>?</h2>
+    <p>
+      The complete thesis — methodology, ablations, full numerical results, and demo videos — will be available after my July 2026 defense. Until then, happy to discuss the work in detail.
+    </p>
+    <div class="cta-row">
+      <a href="mailto:dhruvalde.v29@gmail.com?subject=Thesis%20discussion" class="btn btn-primary">Talk about the work →</a>
+      <a href="index.html" class="btn btn-secondary">← Back to portfolio</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap-wide">
+    <div class="footer-inner">
+      <div>© 2026 Dhruval Vaidya · Master's Thesis · Fraunhofer IPA &amp; HS Schmalkalden</div>
+      <div>Last updated April 2026</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.section, .closing').forEach(el => {
+    el.classList.add('reveal');
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>

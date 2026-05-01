@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dhruval Vaidya — Robotics Engineer · Whole-Body Manipulation & Learning</title>
+<meta name="description" content="Robotics engineer at Fraunhofer IPA. Master's thesis on whole-body manipulation and navigation using Reinforcement Learning & Behavior Cloning. ROS2, mobile manipulation, embedded systems. Stuttgart, Germany.">
+<meta name="author" content="Dhruval Vaidya">
+<meta name="keywords" content="robotics engineer, whole-body manipulation, mobile manipulation, reinforcement learning, behavior cloning, ROS2, Fraunhofer IPA, Stuttgart, mechatronics, robot learning, manipulator, AMR">
+
+<!-- Open Graph (LinkedIn / WhatsApp / Twitter previews) -->
+<meta property="og:title" content="Dhruval Vaidya — Robotics Engineer">
+<meta property="og:description" content="Master's thesis on whole-body manipulation & navigation using RL/BC at Fraunhofer IPA. Stuttgart, DE.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --paper:        #F4EFE6;
+    --paper-soft:   #EAE3D6;
+    --ink:          #14213D;
+    --ink-soft:     #3A4566;
+    --rule:         #C8BFAE;
+    --accent:       #E76F2C;
+    --accent-soft:  #F4D9C4;
+    --muted:        #6B6354;
+    --serif:        'Fraunces', Georgia, serif;
+    --sans:         'Manrope', -apple-system, sans-serif;
+    --mono:         'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    font-weight: 400;
+    overflow-x: hidden;
+    background-image:
+      linear-gradient(var(--rule) 0.5px, transparent 0.5px),
+      linear-gradient(90deg, var(--rule) 0.5px, transparent 0.5px);
+    background-size: 32px 32px;
+    background-position: -1px -1px;
+    background-attachment: fixed;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: var(--paper);
+    opacity: 0.92;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  ::selection { background: var(--accent); color: var(--paper); }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 32px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background: rgba(244, 239, 230, 0.78);
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .nav-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .logo span { color: var(--accent); }
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .nav-links a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  @media (max-width: 820px) { .nav-links { display: none; } }
+
+  /* Hero */
+  .hero {
+    padding: 180px 0 100px;
+    position: relative;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 40px;
+    animation: fadeUp 0.8s 0.1s both;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    background: var(--paper-soft);
+    border: 0.5px solid var(--rule);
+    border-radius: 100px;
+    font-size: 11px;
+  }
+  .badge.thesis-badge {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .pulse {
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(231, 111, 44, 0.6); }
+    50%      { box-shadow: 0 0 0 8px rgba(231, 111, 44, 0); }
+  }
+
+  h1.headline {
+    font-family: var(--serif);
+    font-size: clamp(46px, 7.5vw, 92px);
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+    margin-bottom: 32px;
+    animation: fadeUp 0.9s 0.2s both;
+  }
+  h1.headline em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 400;
+  }
+  h1.headline .underline {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 8px;
+  }
+
+  .hero-sub {
+    max-width: 620px;
+    font-size: 18px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 48px;
+    animation: fadeUp 0.9s 0.35s both;
+  }
+  .hero-sub strong { color: var(--ink); font-weight: 600; }
+
+  .cta-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+    animation: fadeUp 0.9s 0.5s both;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 26px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .btn-primary:hover {
+    background: var(--accent);
+    transform: translateY(-2px);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 0.5px solid var(--ink);
+  }
+  .btn-secondary:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .hero-annotation {
+    position: absolute;
+    top: 240px;
+    right: 32px;
+    width: 240px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.7;
+    text-align: right;
+    animation: fadeUp 1s 0.7s both;
+  }
+  .hero-annotation strong {
+    color: var(--accent);
+    font-weight: 500;
+    display: block;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .hero-annotation::before {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 0.5px;
+    background: var(--rule);
+    margin: 0 0 12px auto;
+  }
+  @media (max-width: 1080px) { .hero-annotation { display: none; } }
+
+  /* Sections */
+  .section {
+    padding: 100px 0;
+    border-top: 0.5px solid var(--rule);
+    position: relative;
+  }
+  .section-label {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 56px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .section-label .num { color: var(--accent); font-weight: 500; }
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 4.5vw, 56px);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    max-width: 860px;
+    margin-bottom: 64px;
+  }
+  .section-title em { font-style: italic; color: var(--accent); }
+
+  /* === RESEARCH / THESIS — the centerpiece === */
+  .research-section {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .research-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 0.5px, transparent 0.5px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 0.5px, transparent 0.5px);
+    background-size: 32px 32px;
+    pointer-events: none;
+  }
+  .research-section .section-label { color: var(--accent-soft); }
+  .research-section .section-label .num { color: var(--accent); }
+  .research-section .section-title { color: var(--paper); }
+  .research-section .section-title em { color: var(--accent); }
+
+  .thesis-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+    padding: 48px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .thesis-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(231, 111, 44, 0.15);
+    color: var(--accent);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .thesis-status .pulse { background: var(--accent); }
+  .thesis-title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin-bottom: 24px;
+    max-width: 880px;
+  }
+  .thesis-title em { font-style: italic; color: var(--accent); }
+  .thesis-desc {
+    font-size: 17px;
+    line-height: 1.7;
+    color: rgba(244, 239, 230, 0.78);
+    max-width: 740px;
+    margin-bottom: 32px;
+  }
+  .thesis-desc strong { color: var(--paper); font-weight: 500; }
+
+  .thesis-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 36px;
+  }
+  .thesis-tags span {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    padding: 6px 14px;
+    border: 0.5px solid rgba(255, 255, 255, 0.18);
+    border-radius: 100px;
+    color: var(--accent-soft);
+  }
+  .thesis-tags span.key {
+    background: var(--accent);
+    color: var(--ink);
+    border-color: var(--accent);
+    font-weight: 500;
+  }
+
+  .thesis-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    padding-top: 32px;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.12);
+  }
+  @media (max-width: 720px) { .thesis-meta-grid { grid-template-columns: 1fr; gap: 20px; } }
+  .thesis-meta-item .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(244, 239, 230, 0.5);
+    margin-bottom: 6px;
+  }
+  .thesis-meta-item .value {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--paper);
+    font-weight: 500;
+  }
+
+  /* Fraunhofer work — sub-grid inside research */
+  .fraunhofer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 40px;
+  }
+  @media (max-width: 720px) { .fraunhofer-grid { grid-template-columns: 1fr; } }
+  .fraunhofer-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 0.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+    padding: 28px 24px;
+    transition: all 0.3s ease;
+  }
+  .fraunhofer-item:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .fraunhofer-item h4 {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--paper);
+  }
+  .fraunhofer-item p {
+    font-size: 14px;
+    color: rgba(244, 239, 230, 0.7);
+    line-height: 1.6;
+  }
+  .fraunhofer-item .icon {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    letter-spacing: 0.06em;
+  }
+
+  /* About */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  @media (max-width: 820px) { .about-grid { grid-template-columns: 1fr; gap: 48px; } }
+  .about-text p {
+    font-size: 17px;
+    line-height: 1.7;
+    margin-bottom: 24px;
+    color: var(--ink-soft);
+  }
+  .about-text p strong { color: var(--ink); font-weight: 600; }
+
+  .stat-card {
+    background: var(--paper-soft);
+    border: 0.5px solid var(--rule);
+    border-radius: 4px;
+    padding: 28px 24px;
+    margin-bottom: 14px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  .stat-card:hover {
+    transform: translate(-2px, -2px);
+    border-color: var(--accent);
+    box-shadow: 4px 4px 0 var(--accent);
+  }
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 48px;
+    line-height: 1;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .stat-num em { font-style: italic; color: var(--accent); }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Experience timeline */
+  .timeline {
+    border-left: 0.5px solid var(--rule);
+    padding-left: 40px;
+    margin-left: 8px;
+  }
+  .exp-item { position: relative; padding-bottom: 56px; }
+  .exp-item:last-child { padding-bottom: 0; }
+  .exp-item::before {
+    content: '';
+    position: absolute;
+    left: -47px; top: 8px;
+    width: 12px; height: 12px;
+    background: var(--paper);
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+  }
+  .exp-item.current::before {
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  .exp-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .exp-role {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  .exp-org {
+    font-size: 15px;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .exp-desc {
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.65;
+    max-width: 620px;
+  }
+  .exp-desc ul { margin-top: 10px; padding-left: 18px; }
+  .exp-desc li { margin-bottom: 4px; }
+
+  /* Projects */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 720px) { .projects-grid { grid-template-columns: 1fr; } }
+  .project {
+    background: var(--paper-soft);
+    border: 0.5px solid var(--rule);
+    border-radius: 4px;
+    padding: 32px;
+    position: relative;
+    transition: all 0.35s ease;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .project:hover {
+    border-color: var(--ink);
+    transform: translateY(-4px);
+  }
+  .project::after {
+    content: '↗';
+    position: absolute;
+    top: 28px; right: 28px;
+    font-size: 22px;
+    color: var(--rule);
+    transition: all 0.3s;
+  }
+  .project:hover::after {
+    color: var(--accent);
+    transform: translate(4px, -4px);
+  }
+
+  .proj-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+    display: block;
+  }
+  .proj-title {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .proj-desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .proj-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .proj-meta span {
+    padding: 3px 10px;
+    border: 0.5px solid var(--rule);
+    border-radius: 100px;
+  }
+
+  /* Skills */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+  }
+  @media (max-width: 720px) { .skills-grid { grid-template-columns: repeat(2, 1fr); } }
+  .skill-cat h4 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 0.5px solid var(--rule);
+  }
+  .skill-cat ul { list-style: none; }
+  .skill-cat li {
+    font-size: 14px;
+    padding: 6px 0;
+    color: var(--ink-soft);
+    border-bottom: 0.5px dashed var(--rule);
+  }
+  .skill-cat li:last-child { border-bottom: none; }
+
+  /* Publication */
+  .pub-card {
+    background: linear-gradient(135deg, var(--paper-soft) 0%, var(--paper) 100%);
+    border: 0.5px solid var(--rule);
+    padding: 48px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: all 0.3s ease;
+  }
+  .pub-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .pub-card::before {
+    content: '"';
+    position: absolute;
+    top: -20px; right: 32px;
+    font-family: var(--serif);
+    font-size: 200px;
+    color: var(--accent);
+    opacity: 0.18;
+    line-height: 1;
+  }
+  .pub-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .pub-title {
+    font-family: var(--serif);
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.3;
+    margin-bottom: 16px;
+    max-width: 720px;
+    position: relative;
+    z-index: 1;
+    color: var(--ink);
+  }
+  .pub-meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* Contact */
+  .contact-section {
+    padding: 120px 0;
+    text-align: center;
+    border-top: 0.5px solid var(--rule);
+  }
+  .contact-title {
+    font-family: var(--serif);
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    margin-bottom: 32px;
+  }
+  .contact-title em { font-style: italic; color: var(--accent); }
+  .contact-sub {
+    font-size: 18px;
+    color: var(--ink-soft);
+    margin-bottom: 48px;
+    max-width: 580px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .contact-email {
+    font-family: var(--serif);
+    font-size: clamp(22px, 3vw, 32px);
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+    transition: color 0.2s;
+    font-style: italic;
+  }
+  .contact-email:hover { color: var(--accent); }
+  .social-row {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 48px;
+    flex-wrap: wrap;
+  }
+  .social-row a {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 10px 20px;
+    border: 0.5px solid var(--rule);
+    border-radius: 100px;
+    transition: all 0.2s;
+  }
+  .social-row a:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+    background: var(--paper-soft);
+  }
+
+  footer {
+    padding: 32px 0;
+    border-top: 0.5px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">Dhruval <span>·</span> Vaidya</div>
+    <ul class="nav-links">
+      <li><a href="#research">Research</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Work</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <div class="hero-meta">
+    <span class="badge"><span class="pulse"></span>Open to grad roles · July 2026</span>
+    <span class="badge thesis-badge">M.Sc. defense · July '26</span>
+  </div>
+
+  <h1 class="headline">
+    Teaching robots<br>
+    to <em>think</em> with their<br>
+    <span class="underline">whole body</span>.
+  </h1>
+
+  <p class="hero-sub">
+    I'm Dhruval — robotics engineer at <strong>Fraunhofer IPA</strong>, finishing my M.Sc. thesis on <strong>whole-body manipulation &amp; navigation using Reinforcement Learning and Behavior Cloning</strong>. Mobile bases, manipulators, and the messy real-world physics where they meet.
+  </p>
+
+  <div class="cta-row">
+    <a href="thesis.html" class="btn btn-primary">Read the research →</a>
+    <a href="Dhruval_Vaidya_CV.pdf" class="btn btn-secondary" download>Download CV</a>
+  </div>
+
+  <aside class="hero-annotation">
+    <strong>// CURRENTLY</strong>
+    Writing thesis report. Defense July 2026. Available for full-time robotics roles from August.
+  </aside>
+</header>
+
+<!-- ========================================== -->
+<!-- 01 · RESEARCH (THE CENTERPIECE) -->
+<!-- ========================================== -->
+<section id="research" class="research-section">
+  <div class="wrap">
+    <div class="section-label">
+      <span class="num">01</span>
+      <span>—— Research · Thesis</span>
+    </div>
+    <h2 class="section-title">Whole-body manipulation, learned from <em>data and demonstration</em>.</h2>
+
+    <div class="thesis-card">
+      <div class="thesis-status">
+        <span class="pulse"></span>
+        Writing report · Defense July 2026
+      </div>
+
+      <h3 class="thesis-title">
+        Whole-Body Manipulation &amp; Navigation using <em>Reinforcement Learning</em> &amp; <em>Behavior Cloning</em>
+      </h3>
+
+      <p class="thesis-desc">
+        Mobile manipulators face a fundamental coordination problem: the base and the arm are usually controlled separately, leaving performance — and reachability — on the table. My thesis investigates <strong>learning-based whole-body control</strong>, where the entire mobile-manipulator system reasons about navigation and manipulation as a single coupled task.
+      </p>
+      <p class="thesis-desc">
+        The work combines <strong>Reinforcement Learning</strong> (for exploration and policy optimization in simulation) with <strong>Behavior Cloning</strong> (for sample-efficient learning from human demonstrations) — an approach designed for the kind of unstructured environments real industrial robots actually live in.
+      </p>
+
+      <div class="thesis-tags">
+        <span class="key">Reinforcement Learning</span>
+        <span class="key">Behavior Cloning</span>
+        <span class="key">Whole-Body Control</span>
+        <span>Mobile Manipulation</span>
+        <span>Imitation Learning</span>
+        <span>Sim-to-Real</span>
+        <span>ROS2</span>
+        <span>Python · PyTorch</span>
+      </div>
+
+      <div class="thesis-meta-grid">
+        <div class="thesis-meta-item">
+          <div class="label">Host Institution</div>
+          <div class="value">Fraunhofer IPA</div>
+        </div>
+        <div class="thesis-meta-item">
+          <div class="label">University</div>
+          <div class="value">HS Schmalkalden</div>
+        </div>
+        <div class="thesis-meta-item">
+          <div class="label">Defense</div>
+          <div class="value">July 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fraunhofer applied work -->
+    <h3 style="font-family: var(--serif); font-size: 28px; font-weight: 400; color: var(--paper); margin: 48px 0 8px;">Applied work at Fraunhofer IPA</h3>
+    <p style="color: rgba(244, 239, 230, 0.65); font-size: 15px; max-width: 720px; margin-bottom: 8px;">
+      Beyond the thesis, I've been hands-on commissioning real industrial robots across a range of platforms — both mobile bases and manipulators.
+    </p>
+
+    <div class="fraunhofer-grid">
+      <div class="fraunhofer-item">
+        <div class="icon">// MOBILE ROBOTS</div>
+        <h4>Autonomous mobile platforms</h4>
+        <p>Commissioning AMRs and AGVs — bring-up, navigation tuning, sensor integration, and on-site validation across multiple project deployments.</p>
+      </div>
+      <div class="fraunhofer-item">
+        <div class="icon">// MANIPULATORS</div>
+        <h4>Industrial robotic arms</h4>
+        <p>Driver integration, motion planning, and application development for industrial manipulators across diverse use-cases.</p>
+      </div>
+      <div class="fraunhofer-item">
+        <div class="icon">// SOFTWARE</div>
+        <h4>Project-specific applications</h4>
+        <p>Custom ROS2 nodes, launch infrastructure, and integration code purpose-built for each project's robot stack and customer requirements.</p>
+      </div>
+      <div class="fraunhofer-item">
+        <div class="icon">// SYSTEMS</div>
+        <h4>End-to-end commissioning</h4>
+        <p>From spec to running system: hardware bring-up, software configuration, debugging, and handover — in a working research-industrial environment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 · ABOUT -->
+<section id="about" class="section">
+  <div class="wrap">
+    <div class="section-label">
+      <span class="num">02</span>
+      <span>—— About</span>
+    </div>
+    <h2 class="section-title">A mechanical engineer who fell in love with <em>code</em>, then with <em>robots that learn</em>.</h2>
+
+    <div class="about-grid">
+      <div class="about-text">
+        <p>My background is automotive — five years of <strong>CAD, simulation, and product engineering</strong> on Creo Parametric and ANSYS, where I learned that good engineering lives in the brutal feedback loop between intent and reality.</p>
+        <p>Then I moved to Germany for a Master's in <strong>Mechatronics &amp; Robotics</strong>, and discovered the layer where mechanical structure meets real-time software — ROS2, embedded firmware, motion planning, and now, robot learning.</p>
+        <p>Today I work at <strong>Fraunhofer IPA</strong>, one of Europe's leading robotics research institutes, splitting my time between commissioning real industrial robots and writing my thesis on <strong>whole-body learning</strong>. I'm looking for full-time roles starting August 2026 — ideally somewhere ambitious about robot autonomy.</p>
+      </div>
+
+      <div>
+        <div class="stat-card">
+          <div class="stat-num"><em>5+</em></div>
+          <div class="stat-label">Years engineering</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">RL + BC</div>
+          <div class="stat-label">Thesis methods</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">1</div>
+          <div class="stat-label">Peer-reviewed paper</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">4</div>
+          <div class="stat-label">Languages spoken</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 · EXPERIENCE -->
+<section id="experience" class="section">
+  <div class="wrap">
+    <div class="section-label">
+      <span class="num">03</span>
+      <span>—— Experience</span>
+    </div>
+    <h2 class="section-title">Five years across <em>three roles</em>, two countries, one through-line.</h2>
+
+    <div class="timeline">
+      <div class="exp-item current">
+        <div class="exp-meta">2024 — Present · Stuttgart, Germany 🇩🇪</div>
+        <h3 class="exp-role">Student Research Assistant</h3>
+        <div class="exp-org">Fraunhofer IPA</div>
+        <p class="exp-desc">
+          Commissioning mobile robots and manipulators across multiple research-industrial projects. Mixed work spanning AMR navigation stacks, manipulator integration, and project-specific ROS2 applications.
+        </p>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-meta">2021 — 2022 · Anand, India 🇮🇳</div>
+        <h3 class="exp-role">Product Application Engineer</h3>
+        <div class="exp-org">Aspire Designs</div>
+        <p class="exp-desc">
+          Delivered engineering solutions on Creo Parametric and ANSYS Workbench, translating client requirements into validated mechanical designs. Owned client communication and project deadlines end-to-end.
+        </p>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-meta">2020 · Anand, India 🇮🇳</div>
+        <h3 class="exp-role">CAD Engineer Intern</h3>
+        <div class="exp-org">Aspire Designs</div>
+        <p class="exp-desc">
+          Project documentation, quality assurance, and design support across the full project lifecycle.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 · PROJECTS -->
+<section id="projects" class="section">
+  <div class="wrap">
+    <div class="section-label">
+      <span class="num">04</span>
+      <span>—— Selected Work</span>
+    </div>
+    <h2 class="section-title">Beyond the thesis — <em>side projects</em> &amp; coursework.</h2>
+
+    <div class="projects-grid">
+
+      <a href="#" class="project">
+        <span class="proj-tag">// Robotics · Coursework</span>
+        <h3 class="proj-title">Mobile Robot Application — ROS2</h3>
+        <p class="proj-desc">ROS2-based control and path-planning pipeline for mobile robots, with motion-planning algorithms tuned for optimized trajectories. System-level design and code validation in MATLAB Simulink.</p>
+        <div class="proj-meta">
+          <span>ROS2</span><span>Simulink</span><span>C++</span>
+        </div>
+      </a>
+
+      <a href="#" class="project">
+        <span class="proj-tag">// Embedded</span>
+        <h3 class="proj-title">X–Y Pen Plotter</h3>
+        <p class="proj-desc">A 2-axis CNC pen plotter built from scratch on ESP32. Stepper drivers, position sensors, 3D-printed mechanics, and firmware in C/C++ — drawing precise designs end-to-end.</p>
+        <div class="proj-meta">
+          <span>ESP32</span><span>C/C++</span><span>Firmware</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- 05 · PUBLICATION -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">
+      <span class="num">05</span>
+      <span>—— Publication</span>
+    </div>
+
+    <a href="#" class="pub-card">
+      <div class="pub-tag">Expert Systems with Applications · Elsevier · 2021</div>
+      <h3 class="pub-title">Selection of bus chassis for large fleet operators in India: An AHP–TOPSIS approach</h3>
+      <div class="pub-meta">→ Read on ScienceDirect</div>
+    </a>
+  </div>
+</section>
+
+<!-- 06 · STACK -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">
+      <span class="num">06</span>
+      <span>—— Stack</span>
+    </div>
+    <h2 class="section-title">The tools I reach for.</h2>
+
+    <div class="skills-grid">
+      <div class="skill-cat">
+        <h4>Robot Learning</h4>
+        <ul>
+          <li>Reinforcement Learning</li>
+          <li>Behavior Cloning</li>
+          <li>PyTorch</li>
+          <li>Sim-to-Real</li>
+        </ul>
+      </div>
+      <div class="skill-cat">
+        <h4>Robotics</h4>
+        <ul>
+          <li>ROS2</li>
+          <li>MoveIt2 · Nav2</li>
+          <li>Gazebo · Isaac Sim</li>
+          <li>URDF / Xacro</li>
+        </ul>
+      </div>
+      <div class="skill-cat">
+        <h4>Languages</h4>
+        <ul>
+          <li>Python</li>
+          <li>C / C++</li>
+          <li>MATLAB / Simulink</li>
+          <li>Bash</li>
+        </ul>
+      </div>
+      <div class="skill-cat">
+        <h4>CAD / CAE</h4>
+        <ul>
+          <li>Creo Parametric</li>
+          <li>ANSYS Workbench</li>
+          <li>AutoCAD</li>
+          <li>SolidWorks basics</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <div class="wrap">
+    <div class="section-label" style="justify-content: center;">
+      <span class="num">07</span>
+      <span>—— Get in touch</span>
+    </div>
+    <h2 class="contact-title">Let's build robots <em>that move.</em></h2>
+    <p class="contact-sub">
+      Available full-time from <strong>August 2026</strong>. Open to robotics, mobile manipulation, robot learning, and applied research roles across the EU. Always happy to talk about whole-body control or a hard engineering problem.
+    </p>
+
+    <a href="mailto:dhruvalde.v29@gmail.com" class="contact-email">dhruvalde.v29@gmail.com</a>
+
+    <div class="social-row">
+      <a href="https://www.linkedin.com/in/dhruval-vaidya" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a href="https://github.com/Vaidya-Dhruval" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="tel:+4917685917274">+49 176 8591 7274</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>© 2026 Dhruval Vaidya · Designed &amp; built in Stuttgart</div>
+      <div>v2.0 · Last updated April 2026</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.section, .research-section, .contact-section').forEach(el => {
+    el.classList.add('reveal');
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
