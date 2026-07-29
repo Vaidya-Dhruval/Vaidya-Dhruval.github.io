@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dhruval Vaidya — Robotics Engineer · Whole-Body Manipulation</title>
-<meta name="description" content="Robotics engineer with Fraunhofer IPA experience. Whole-body manipulation with RL & Behavior Cloning. ROS2, MuJoCo, PyTorch. Available immediately. Stuttgart, Germany.">
+<title>Dhruval Vaidya — Robotics & AI Systems Engineer</title>
+<meta name="description" content="Robotics & AI Systems Engineer with 2 years at Fraunhofer IPA in industrial automation. Whole-body manipulation with RL & Behavior Cloning. ROS2, MuJoCo, PyTorch. Available immediately. Stuttgart, Germany.">
 <meta name="keywords" content="robotics engineer, whole-body manipulation, reinforcement learning, behavior cloning, ROS2, MuJoCo, PyTorch, Fraunhofer IPA, mobile manipulation, robot learning, Stuttgart">
 
-<meta property="og:title" content="Dhruval Vaidya — Robotics Engineer">
-<meta property="og:description" content="Whole-body manipulation · RL + BC · ex-Fraunhofer IPA · Available immediately · Stuttgart">
+<meta property="og:title" content="Dhruval Vaidya — Robotics & AI Systems Engineer">
+<meta property="og:description" content="Whole-body manipulation · RL + BC · 2 years at Fraunhofer IPA · Available immediately · Stuttgart">
 <meta property="og:type" content="website">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -93,6 +93,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    text-decoration: none;
   }
   .nav-logo .prompt { color: var(--accent); }
   .nav-logo .cursor {
@@ -155,6 +156,47 @@
     50%      { box-shadow: 0 0 0 6px rgba(0, 217, 163, 0); }
   }
   .status-line span.label { color: var(--text); font-weight: 500; }
+
+  /* Top highlight banner — dv2922 active builds */
+  .top-highlight {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    text-decoration: none;
+    padding: 9px 16px;
+    margin-bottom: 24px;
+    background: rgba(0, 217, 163, 0.07);
+    border: 1px solid rgba(0, 217, 163, 0.35);
+    border-radius: 100px;
+    transition: all 0.2s;
+  }
+  .top-highlight:hover {
+    background: rgba(0, 217, 163, 0.14);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .top-highlight .dot {
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+  }
+  .top-highlight code {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .top-highlight .th-arrow {
+    color: var(--accent);
+    transition: transform 0.2s;
+  }
+  .top-highlight:hover .th-arrow { transform: translateX(3px); }
+  @media (max-width: 560px) {
+    .top-highlight { font-size: 12px; padding: 8px 14px; }
+  }
 
   h1.hero-title {
     font-size: clamp(40px, 6vw, 68px);
@@ -577,6 +619,67 @@
     vertical-align: middle;
   }
 
+  /* Playground / secondary GitHub link */
+  .playground-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-top: 32px;
+    padding: 20px 24px;
+    background: rgba(0, 217, 163, 0.05);
+    border: 1px solid rgba(0, 217, 163, 0.35);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+  }
+  .playground-link:hover {
+    border-color: var(--accent);
+    background: rgba(0, 217, 163, 0.1);
+    transform: translateY(-1px);
+  }
+  .playground-eyebrow {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(0, 217, 163, 0.12);
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .playground-arrow {
+    font-family: var(--mono);
+    font-size: 20px;
+    color: var(--accent);
+    line-height: 1.4;
+    flex-shrink: 0;
+  }
+  .playground-link strong {
+    display: block;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .playground-link code {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .playground-desc {
+    display: block;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
   /* === PUBLICATION === */
   .pub-card {
     background: var(--bg-elevated);
@@ -708,25 +811,31 @@
 <!-- HERO -->
 <header class="hero">
   <div class="wrap">
+    <a href="https://github.com/dv2922" target="_blank" rel="noopener" class="top-highlight">
+      <span class="dot"></span>
+      <span>Active project stack & build log at <code>github.com/dv2922</code></span>
+      <span class="th-arrow">→</span>
+    </a>
+
     <div class="status-line">
       <span class="status-dot"></span>
       <span class="label">Available immediately</span>
-      · Robotics engineer · Stuttgart, DE · open to EU relocation
+      · Robotics & AI Systems Engineer · Stuttgart, DE · open to global relocation
     </div>
 
     <h1 class="hero-title">
-      Robotics engineer.<br>
+      Robotics &amp; AI Systems Engineer.<br>
       <span class="kw">Whole-body manipulation</span><br>
       learned from <span class="kw">data</span>.
     </h1>
 
     <div class="hero-tagline">
       <span class="comment">// stack</span><br>
-      <span class="role">@robotics_engineer</span> &nbsp;ROS2 &nbsp;·&nbsp; PyTorch &nbsp;·&nbsp; MuJoCo &nbsp;·&nbsp; C++ / Python &nbsp;·&nbsp; ex-Fraunhofer IPA
+      <span class="role">@robotics_ai_engineer</span> &nbsp;ROS2 &nbsp;·&nbsp; PyTorch &nbsp;·&nbsp; MuJoCo &nbsp;·&nbsp; C++ / Python
     </div>
 
     <p class="hero-desc">
-      Robotics engineer with hands-on experience commissioning mobile robots and manipulators at <strong>Fraunhofer IPA</strong>. Research focused on <strong>learning-based whole-body control</strong> using Reinforcement Learning and Behavior Cloning, validated on contact-rich tasks like door opening in MuJoCo. Looking for my next role.
+      Robotics &amp; AI Systems Engineer with <strong>2 years at Fraunhofer IPA</strong> in industrial automation — commissioning mobile robots and manipulators. Research focused on <strong>learning-based whole-body control</strong> using Reinforcement Learning and Behavior Cloning, validated on contact-rich tasks like door opening in MuJoCo. Looking for my next role.
     </p>
 
     <div class="cta-row">
@@ -855,7 +964,7 @@
         <div>
           <div class="exp-role">Looking for next role</div>
           <div class="exp-org">@ Available immediately · Stuttgart, DE</div>
-          <div class="exp-desc">Open to robotics, mobile manipulation, robot learning, and applied research roles across the EU. Ready to start immediately.</div>
+          <div class="exp-desc">Open to robotics, mobile manipulation, robot learning, and applied research roles worldwide. Ready to start immediately.</div>
         </div>
       </div>
 
@@ -905,6 +1014,7 @@
           <span class="stack-pill">Behavior Cloning</span>
           <span class="stack-pill">PyTorch</span>
           <span class="stack-pill">MuJoCo</span>
+          <span class="stack-pill">Isaac Sim</span>
           <span class="stack-pill">Imitation Learning</span>
         </div>
       </div>
@@ -927,6 +1037,16 @@
           <span class="stack-pill">C</span>
           <span class="stack-pill">MATLAB</span>
           <span class="stack-pill">Bash</span>
+        </div>
+      </div>
+      <div class="stack-block">
+        <h4>Industrial Automation</h4>
+        <div class="stack-pills">
+          <span class="stack-pill">PLC Programming</span>
+          <span class="stack-pill">OPC-UA</span>
+          <span class="stack-pill">Siemens TIA Portal (basics)</span>
+          <span class="stack-pill">B&amp;R Automation (basics)</span>
+          <span class="stack-pill">SCADA &amp; HMI (learning)</span>
         </div>
       </div>
       <div class="stack-block">
@@ -995,6 +1115,15 @@
         </div>
       </a>
     </div>
+
+    <a href="https://github.com/dv2922" target="_blank" rel="noopener" class="playground-link">
+      <span class="playground-arrow">→</span>
+      <span>
+        <span class="playground-eyebrow">SECOND GITHUB</span>
+        <strong>More at <code>github.com/dv2922</code></strong>
+        <span class="playground-desc">Playground account for hobby experiments, industrial project replicas, and quick prototypes.</span>
+      </span>
+    </a>
   </div>
 </section>
 
@@ -1019,14 +1148,15 @@
     <div class="section-meta"><span class="hash">#</span> 06 · contact</div>
     <h2>Let's build <span class="kw">robots that move.</span></h2>
     <p>
-      Open to robotics, mobile manipulation, robot learning, and applied research roles across the EU. Always happy to talk shop about whole-body control, RL, or a hard engineering problem.
+      Open to robotics, mobile manipulation, robot learning, and applied research roles worldwide. Always up for a conversation — AI, emerging tech, startups, markets, or ideas worth building.
     </p>
 
     <a href="mailto:dhruvalde.v29@gmail.com" class="contact-email">→ dhruvalde.v29@gmail.com</a>
 
     <div class="social-row">
       <a href="https://www.linkedin.com/in/dhruval-vaidya" target="_blank" rel="noopener">[LinkedIn ↗]</a>
-      <a href="https://github.com/Vaidya-Dhruval" target="_blank" rel="noopener">[GitHub ↗]</a>
+      <a href="https://github.com/Vaidya-Dhruval" target="_blank" rel="noopener">[GitHub · main ↗]</a>
+      <a href="https://github.com/dv2922" target="_blank" rel="noopener">[GitHub · playground ↗]</a>
       <a href="tel:+4917685917274">[+49 176 8591 7274]</a>
     </div>
   </div>
